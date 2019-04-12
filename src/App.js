@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import http from "./services/httpService";
 import "./App.css";
-
-const apiEndopoint = "https://jsonplaceholder.typicode.com/posts";
+import config from "./config.json";
 
 class App extends Component {
   state = {
@@ -10,13 +9,13 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const { data: posts } = await http.get(apiEndopoint);
+    const { data: posts } = await http.get(config.apiEndopoint);
     this.setState({ posts });
   }
 
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await http.post(apiEndopoint, obj);
+    const { data: post } = await http.post(config.apiEndopoint, obj);
 
     const posts = [post, ...this.state.posts];
     this.setState({ posts });
@@ -24,7 +23,7 @@ class App extends Component {
 
   handleUpdate = async post => {
     post.title = "UPDATE";
-    await http.put(apiEndopoint + "/" + post.id, post);
+    await http.put(config.apiEndopoint + "/" + post.id, post);
 
     const posts = [...this.state.posts];
     const index = posts.indexOf(post);
@@ -39,7 +38,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await http.delete("s" + apiEndopoint + "/" + post.id);
+      await http.delete("s" + config.apiEndopoint + "/" + post.id);
     } catch (ex) {
       if (ex.response && ex.response.status === 404)
         alert("This post has already been deleted.");
